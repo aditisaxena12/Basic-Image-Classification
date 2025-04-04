@@ -1,3 +1,7 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
 from common.utils import *
 from common.train_utils import *
 from plot_results import plot_loss_accuracy
@@ -30,7 +34,8 @@ class Net(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.drop(x)
         x = torch.relu(self.fc1(x))
-        x = torch.log_softmax(self.fc2(x), dim=1)
+        #x = torch.log_softmax(self.fc2(x), dim=1)
+        x = self.fc2(x)
         return x
 
 
@@ -43,13 +48,13 @@ def main() -> None:
     print("Model Parameter Count:", sum(p.numel() for p in model.parameters()))
 
     # Create an optimizer
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.AdamW(model.parameters(), lr=0.001 , weight_decay=2e-4)
 
     # Train the model
-    train(model, train_loader, optimizer, epochs=25)
+    train(model, train_loader, optimizer, epochs=50, log_file="train_log_WD_LS_DA_50.json", model_file="model_WD_LS_DA_50.pth")
 
     # Evaluate the model
     test_loss, test_acc = evaluate(model, test_loader)
     print(f"Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.4f}")
 
-    plot_loss_accuracy("/home/aditis/ML/Assignment2/training_logs/train_log.json", "/home/aditis/ML/Assignment2/plots/train_loss_accuracy.png", test_acc)
+    plot_loss_accuracy("/home/aditis/ML/Assignment2/training_logs/train_log_WD_LS_DA_50.json", "/home/aditis/ML/Assignment2/plots/train_loss_accuracy_WD_LS_DA_50.png", test_acc)
