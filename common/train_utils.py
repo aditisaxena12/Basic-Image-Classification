@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 
 
 def get_gradients(model):
-    grads = []
+    grads = {}
     for name, param in model.named_parameters():
         if param.grad is not None:
-            grads.append(param.grad.norm().item())  
+            grads[name] = param.grad.norm().item()
     return grads
 
 def train_epoch(
@@ -48,7 +48,7 @@ def train_epoch(
         total_correct += (output.argmax(1) == target).sum().item()
         total_samples += data.size(0)
 
-    return total_loss / total_samples, total_correct / total_samples, grad_history
+    return total_loss / total_samples, total_correct / total_samples , grad_history
 
 
 def evaluate(
@@ -86,7 +86,6 @@ def train(
     print("Training...")
     model.to(get_device())
 
-    # Create a dictionary to store the training log
     train_log = {
         "loss": [],
         "accuracy": [],
@@ -95,6 +94,7 @@ def train(
 
     for epoch in range(epochs):
         train_loss, train_acc, gradients = train_epoch(model, data_loader, optimizer)
+        #train_loss, train_acc = train_epoch(model, data_loader, optimizer)
         train_log["loss"].append(train_loss)
         train_log["accuracy"].append(train_acc)
         train_log["gradients"].append(gradients)
@@ -110,20 +110,30 @@ def train(
     torch.save(model.state_dict(), f"/home/aditis/ML/Assignment2/models/{model_file}")
     print("Training complete!")
 
-    plot_gradients(train_log["gradients"], "gradients.png")
+    plot_gradients(train_log["gradients"], "gradients_110.png")
 
 
 def plot_gradients(grad_history, save_path="gradients.png"):
-    grad_history = np.array(grad_history)  
 
-    plt.figure(figsize=(10, 5))
-    for i in range(grad_history.shape[2]): 
-        plt.plot(grad_history[:, :, i].mean(axis=1), label=f'Layer {i+1}')
+    all_grads = [g for epoch in grad_history for g in epoch]
+
+  
+    layer_names = list(all_grads[0].keys())
+
+    grad_matrix = np.array([[g[name] for name in layer_names] for g in all_grads])
+
+    plt.figure(figsize=(14, 6))
+    for i, name in enumerate(layer_names):
+        plt.plot(grad_matrix[:, i], label=name)
 
     plt.xlabel("Batch Iteration")
     plt.ylabel("Gradient Norm")
-    plt.yscale("log") 
-    plt.title("Gradient Norms Across Layers")
-    
+    plt.yscale("log")
+    plt.title("Layer-wise Gradient Norms During Training")
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=8)
+    plt.tight_layout()
+
     os.makedirs("/home/aditis/ML/Assignment2/plots", exist_ok=True)
     plt.savefig(f"/home/aditis/ML/Assignment2/plots/{save_path}")
+    plt.close()
+

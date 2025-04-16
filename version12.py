@@ -10,12 +10,12 @@ from ResNet import PlainNet
 
 def main() -> None:
     # Load the data
-    train_loader, test_loader = get_data('cifar10', batch_size=64)
+    train_loader, test_loader = get_data('cifar10', batch_size=100)
 
     # Create a model
     model = PlainNet(18)
     print("Model Parameter Count:", sum(p.numel() for p in model.parameters()))
-
+    print(model)
     # Create an optimizer
     optimizer = optim.SGD(model.parameters(), lr=0.001 , momentum=0.9, weight_decay=0.0001)
 

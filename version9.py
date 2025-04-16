@@ -36,7 +36,7 @@ class Net(nn.Module):
 
 def main() -> None:
     # Load the data
-    train_loader, test_loader = get_data('cifar10', batch_size=64)
+    train_loader, test_loader = get_data('cifar10', batch_size=32)
 
     # Create a model
     model = Net()
@@ -46,10 +46,10 @@ def main() -> None:
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     # Train the model
-    train(model, train_loader, optimizer, epochs=25)
+    train(model, train_loader, optimizer, epochs=25, log_file="train_log_BSdec.json", model_file="model_BSdec.pth")
 
     # Evaluate the model
     test_loss, test_acc = evaluate(model, test_loader)
     print(f"Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.4f}")
 
-    plot_loss_accuracy("/home/aditis/ML/Assignment2/training_logs/train_log.json", "/home/aditis/ML/Assignment2/plots/train_loss_accuracy.png", test_acc)
+    plot_loss_accuracy("/home/aditis/ML/Assignment2/training_logs/train_log_BSdec.json", "/home/aditis/ML/Assignment2/plots/train_loss_accuracy_BSdec.png", test_acc)

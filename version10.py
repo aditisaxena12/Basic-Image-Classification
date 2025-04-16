@@ -48,13 +48,13 @@ def main() -> None:
     print("Model Parameter Count:", sum(p.numel() for p in model.parameters()))
 
     # Create an optimizer
-    optimizer = optim.AdamW(model.parameters(), lr=0.001 , weight_decay=2e-4)
+    optimizer = optim.AdamW(model.parameters(), lr=0.001 , weight_decay=3e-5)
 
     # Train the model
-    train(model, train_loader, optimizer, epochs=50, log_file="train_log_WD_LS_DA_50.json", model_file="model_WD_LS_DA_50.pth")
+    train(model, train_loader, optimizer, epochs=25, log_file="train_log_WD_LS.json", model_file="model_WD_LS.pth")
 
     # Evaluate the model
     test_loss, test_acc = evaluate(model, test_loader)
     print(f"Test Loss: {test_loss:.4f} | Test Acc: {test_acc:.4f}")
 
-    plot_loss_accuracy("/home/aditis/ML/Assignment2/training_logs/train_log_WD_LS_DA_50.json", "/home/aditis/ML/Assignment2/plots/train_loss_accuracy_WD_LS_DA_50.png", test_acc)
+    plot_loss_accuracy("/home/aditis/ML/Assignment2/training_logs/train_log_WD_LS.json", "/home/aditis/ML/Assignment2/plots/train_loss_accuracy_WD_LS.png", test_acc)

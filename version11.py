@@ -10,7 +10,7 @@ from ResNet import ResNet
 
 def main() -> None:
     # Load the data
-    train_loader, test_loader = get_data('cifar10', batch_size=64)
+    train_loader, test_loader = get_data('cifar10', batch_size=100)
 
     # Create a model
     model = ResNet(3)

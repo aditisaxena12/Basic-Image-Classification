@@ -19,10 +19,11 @@ def get_data(
         train_transform = transforms.Compose([
         transforms.RandomCrop(32, padding=4),  # Randomly crops & pads images
         transforms.RandomHorizontalFlip(),  # 50% chance to flip image
-        transforms.AutoAugment(),  # Automatic data augmentation (Optional but powerful)
-        transforms.ToTensor(),  # Convert to PyTorch tensor
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize images
+        transforms.AutoAugment(), 
+        transforms.ToTensor(), 
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  
         ]),
+
         test_transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
